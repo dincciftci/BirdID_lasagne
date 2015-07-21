@@ -55,7 +55,7 @@ for foldername in folders:
     features1 = features1 + (feat,)
 
 features1 = np.array(list(features1))
-features1 = features1.astype(theano.config.floatX) / 255.0
+features1 = features1.astype(theano.config.floatX) / 255.0 - 0.5
 features1 = features1.transpose( (0, 3, 1, 2) ) #(h, w, channel) to (channel, h, w)
 
 # Generate labels

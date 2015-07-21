@@ -14,20 +14,20 @@ from random import randint
 
 # ############################### prepare data ###############################
 
-RATIO = 0.6 # The ratio of the data set to use for training
+RATIO = 0.8 # The ratio of the data set to use for training
 PER_CATEGORY = 98 # Images to be used per category (training + validation)
 CATEGORIES = 9 # Number of categories present in the data folder
-DIR = "../wholedataset" # Path to folder
+DIR = "./wholedataset" # Path to folder
 TYPE = ".jpg" # Extension of the images in the subfolders
 
 DIM = 128 # Input to the network (images are resized to be square)
 PREAUG_DIM = 140 # Dimensions to augment from
 
-EPOCHS = 300
+EPOCHS = 500
 BATCH_SIZE = 1
 
-SEED1 = 6789
-SEED2 = 9876
+SEED1 = 0
+SEED2 = 0
 
 SAVE = False
 print("Loading images")
@@ -63,7 +63,7 @@ for foldername in folders:
     features = features + (img,)
 
 features = np.array(list(features)) # Array conversion
-features= features.astype(theano.config.floatX) / 255.0
+features= features.astype(theano.config.floatX) / 255.0 - 0.5
 
 #features = features.transpose( (0, 3, 1, 2) ) #(h, w, channel) to (channel, h, w)
 

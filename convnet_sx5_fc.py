@@ -63,7 +63,7 @@ for foldername in folders:
     features = features + (img,)
 
 features = np.array(list(features)) # Array conversion
-features= features.astype(theano.config.floatX) / 255.0
+features= features.astype(theano.config.floatX) / 255.0 -0.5
 
 #features = features.transpose( (0, 3, 1, 2) ) #(h, w, channel) to (channel, h, w)
 
