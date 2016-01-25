@@ -1,3 +1,6 @@
 # Numpy files
 *.npy
 *.npz
+
+# compiled python files
+*.pyc
