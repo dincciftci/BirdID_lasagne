@@ -11,31 +11,42 @@ import lasagne
 import sys, os.path
 from scipy.misc import imresize, imread
 from random import randint
+import argparse
 
 # ############################### prepare data ###############################
 
-RATIO = 0.6 # The ratio of the data set to use for training
-PER_CATEGORY = 98 # Images to be used per category (training + validation)
-CATEGORIES = 9 # Number of categories present in the data folder
-DIR = "../wholedataset" # Path to folder
-TYPE = ".jpg" # Extension of the images in the subfolders
+parser = argparse.ArgumentParser(description= 'Accept network configuration and save file')
+parser.add_argument("-c", "--config", default= "defaultconfig", help="The name of the network configuration to be used")
+parser.add_argument("-s", "--save", default= "", help= "The name of the file that the trained network will be saved in")
+args = parser.parse_args()
 
-DIM = 128 # Input to the network (images are resized to be square)
-PREAUG_DIM = 140 # Dimensions to augment from
+print("Using the configuration from " + args.config + ".py")
 
-EPOCHS = 300
-BATCH_SIZE = 1
+config = __import__(args.config)
 
-SEED1 = 6789
-SEED2 = 9876
+RATIO = config.RATIO 
+PER_CATEGORY = config.PER_CATEGORY 
+CATEGORIES = config.CATEGORIES 
+DIR = config.DIR 
+TYPE = config.TYPE 
 
-SAVE = False
-print("Loading images")
+DIM = config.DIM 
+PREAUG_DIM = config.PREAUG_DIM 
 
-if len(sys.argv) == 2:
+EPOCHS = config.EPOCHS 
+BATCH_SIZE = config.BATCH_SIZE 
+
+SEED1 = config.SEED1 
+SEED2 = config.SEED2 
+
+SAVE = config.SAVE 
+
+if (args.save) != "":
   SAVE = True
-  savename = sys.argv[1]  
+  savename = args.save
   print("Network parameters will be saved as " + savename + ".npy")
+
+print("Loading images")
 
 folders = os.listdir(DIR)
 features = ( )
@@ -121,92 +132,11 @@ def augment(batch):
 
 # ############################## prepare model ##############################
 
-# - conv layers take in 4-tensors with the following dimensions:
-#   (batch size, number of channels, image dim 1, image dim 2)
-l_in = lasagne.layers.InputLayer(
-    shape=(None, 3, DIM, DIM),
-)
-
-l_pad1 = lasagne.layers.PadLayer(
-    l_in,
-    width=1,#padding width
-)
-
-l_conv1 = lasagne.layers.Conv2DLayer(
-    l_pad1,
-    num_filters=32,
-    filter_size=3,
-    nonlinearity=lasagne.nonlinearities.rectify,
-    W=lasagne.init.GlorotUniform(gain='relu'),
-)
-
-l_pool1 = lasagne.layers.MaxPool2DLayer(l_conv1, 
-    pool_size=(2, 2),
-    stride=2,
-)
-
-
-l_pad2 = lasagne.layers.PadLayer(
-    l_pool1,
-    width=1,#padding width
-)
-
-l_conv2 = lasagne.layers.Conv2DLayer(
-    l_pad2,
-    num_filters=64,
-    filter_size=3,
-    nonlinearity=lasagne.nonlinearities.rectify,
-    W=lasagne.init.GlorotUniform(gain='relu'),
-)
-
-l_pool2 = lasagne.layers.MaxPool2DLayer(l_conv2, 
-    pool_size=(2, 2),
-    stride=2,
-)
-
-
-
-l_pad3 = lasagne.layers.PadLayer(
-    l_pool2,
-    width=1,#padding width
-)
-
-l_conv3 = lasagne.layers.Conv2DLayer(
-    l_pad3,
-    num_filters=128,
-    filter_size=3,
-    nonlinearity=lasagne.nonlinearities.rectify,
-    W=lasagne.init.GlorotUniform(gain='relu'),
-)
-
-
-l_pool3 = lasagne.layers.MaxPool2DLayer(l_conv3, 
-    pool_size=(2, 2),
-    stride=2,
-)
-
-
-l_hidden1 = lasagne.layers.DenseLayer(
-    l_pool3,
-    num_units=512,
-    W=lasagne.init.GlorotUniform(gain="relu"),
-)
-
-l_hidden1_dropout = lasagne.layers.DropoutLayer(l_hidden1, p=0.5)
-
-
-# - applies the softmax after computing the final layer units
-l_out = lasagne.layers.DenseLayer(
-    l_hidden1_dropout,
-    #l_pool3,
-    num_units=CATEGORIES,
-    nonlinearity=lasagne.nonlinearities.softmax,
-    #W=lasagne.init.GlorotUniform(),
-)
+l_in, l_out = config.build_model()
 
 # ############################### network loss ###############################
 
-l2_regularization_rate = 0.0001
+l2_regularization_rate = config.l2_regularization_rate 
 
 # int32 vector
 target_vector = T.ivector('y')

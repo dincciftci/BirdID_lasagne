@@ -16,7 +16,7 @@ from random import randint
 RATIO = 0.6 # The ratio of the data set to use for training
 PER_CATEGORY = 98 # Images to be used per category (training + validation)
 CATEGORIES = 9 # Number of categories present in the data folder
-DIR = "../../wholedataset" # Path to folder
+DIR = "../wholedataset" # Path to folder
 TYPE = ".jpg" # Extension of the images in the subfolders
 
 DIM = 128 # Input to the network (images are resized to be square)
@@ -107,9 +107,18 @@ def build_model():
 
   l_hidden1_dropout = lasagne.layers.DropoutLayer(l_hidden1, p=0.5)
 
+
+  l_hidden2 = lasagne.layers.DenseLayer(
+      l_hidden1_dropout,
+      num_units=512,
+      W=lasagne.init.GlorotUniform(gain="relu"),
+      )
+
+  l_hidden2_dropout = lasagne.layers.DropoutLayer(l_hidden2, p=0.5)
+
 # - applies the softmax after computing the final layer units
   l_out = lasagne.layers.DenseLayer(
-      l_hidden1_dropout,
+      l_hidden2_dropout,
       #l_pool3,
       num_units=CATEGORIES,
       nonlinearity=lasagne.nonlinearities.softmax,
