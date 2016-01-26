@@ -11,12 +11,16 @@ import lasagne
 import sys, os.path
 from scipy.misc import imresize, imread
 from random import randint
-# import importlib
+import argparse
 
 # ############################### prepare data ###############################
 
-#config = importlib.import_module("config")
-config = __import__("config")
+parser = argparse.ArgumentParser(description= 'Accept network configuration and save file')
+parser.add_argument("-c", "--config", default= "defaultconfig", help="The name of the network configuration to be used")
+parser.add_argument("-s", "--save", default= "", help= "The name of the file that the trained network will be saved in")
+args = parser.parse_args()
+
+config = __import__(args.config)
 
 RATIO = config.RATIO 
 PER_CATEGORY = config.PER_CATEGORY 
@@ -36,9 +40,9 @@ SEED2 = config.SEED2
 SAVE = config.SAVE 
 print("Loading images")
 
-if len(sys.argv) == 2:
+if (args.save) != "":
   SAVE = True
-  savename = sys.argv[1]  
+  savename = args.save
   print("Network parameters will be saved as " + savename + ".npy")
 
 folders = os.listdir(DIR)
