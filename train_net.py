@@ -18,6 +18,7 @@ import argparse
 parser = argparse.ArgumentParser(description= 'Accept network configuration and save file')
 parser.add_argument("-c", "--config", default= "defaultconfig", help="The name of the network configuration to be used")
 parser.add_argument("-s", "--save", default= "", help= "The name of the file that the trained network will be saved in")
+parser.add_argument("-r", "--resume", default= "", help= "The .npy file containing the values of the parameters for the network being resumed (include the extension)")
 args = parser.parse_args()
 
 print("Using the configuration from " + args.config + ".py")
@@ -133,6 +134,11 @@ def augment(batch):
 # ############################## prepare model ##############################
 
 l_in, l_out = config.build_model()
+
+if (args.resume) != "":
+  print("Loading network parameters from " + args.resume )
+  set_all_params_values(l_out, np.load(args.resume))
+
 
 # ############################### network loss ###############################
 
