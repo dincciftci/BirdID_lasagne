@@ -186,7 +186,7 @@ updates = lasagne.updates.nesterov_momentum(
 updates = lasagne.updates.adagrad(
     loss_or_grads=stochastic_loss,
     params=all_params,
-    learning_rate=0.001,
+    learning_rate=0.009,
     #other params left as default as recommended in the documentation
 )
 
