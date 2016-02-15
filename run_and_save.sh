@@ -1,4 +1,5 @@
 #!/bin/bash
+rm *.pyc
 sudo nohup python -u train_net.py -c sx3_ffc -s state_ffc > ffc_output.txt
 sudo cp ffc_output.txt state_ffc.npy /data
 sudo nohup python -u train_net.py -c sx3_ffc_b5 -s state_ffc_b5 > ffc_b5_output.txt

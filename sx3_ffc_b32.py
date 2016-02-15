@@ -23,7 +23,7 @@ DIM = 128 # Input to the network (images are resized to be square)
 PREAUG_DIM = 140 # Dimensions to augment from
 
 EPOCHS = 300
-BATCH_SIZE = 5
+BATCH_SIZE = 32
 
 SEED1 = 6789
 SEED2 = 9876
