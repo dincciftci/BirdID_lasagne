@@ -31,6 +31,7 @@ SEED2 = 9876
 SAVE = False
 
 l2_regularization_rate = 0.0001
+learning_rate=0.009
 
 def build_model():
     """Returns the input and output layers in a tuple"""

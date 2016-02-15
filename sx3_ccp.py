@@ -23,7 +23,7 @@ DIM = 128 # Input to the network (images are resized to be square)
 PREAUG_DIM = 140 # Dimensions to augment from
 
 EPOCHS = 300
-BATCH_SIZE = 1
+BATCH_SIZE = 32
 
 SEED1 = 6789
 SEED2 = 9876
@@ -31,7 +31,8 @@ SEED2 = 9876
 SAVE = False
 
 l2_regularization_rate = 0.0001
-learning_rate=0.009
+
+learning_rate = 0.009
 
 def build_model():
   """Returns the input and output layers in a tuple"""
@@ -48,20 +49,14 @@ def build_model():
 
   l_conv1 = lasagne.layers.Conv2DLayer(
       l_pad1,
-      num_filters=32,
+      num_filters=64,
       filter_size=3,
       nonlinearity=lasagne.nonlinearities.rectify,
       W=lasagne.init.GlorotUniform(gain='relu'),
       )
 
-  l_pool1 = lasagne.layers.MaxPool2DLayer(l_conv1, 
-      pool_size=(2, 2),
-      stride=2,
-      )
-
-
   l_pad2 = lasagne.layers.PadLayer(
-      l_pool1,
+      l_conv1,
       width=1,#padding width
       )
 
@@ -73,7 +68,7 @@ def build_model():
       W=lasagne.init.GlorotUniform(gain='relu'),
       )
 
-  l_pool2 = lasagne.layers.MaxPool2DLayer(l_conv2, 
+  l_pool1 = lasagne.layers.MaxPool2DLayer(l_conv2, 
       pool_size=(2, 2),
       stride=2,
       )
@@ -81,7 +76,7 @@ def build_model():
 
 
   l_pad3 = lasagne.layers.PadLayer(
-      l_pool2,
+      l_pool1,
       width=1,#padding width
       )
 
@@ -93,25 +88,67 @@ def build_model():
       W=lasagne.init.GlorotUniform(gain='relu'),
       )
 
+  l_pad4 = lasagne.layers.PadLayer(
+      l_conv3,
+      width=1,#padding width
+      )
 
-  l_pool3 = lasagne.layers.MaxPool2DLayer(l_conv3, 
+  l_conv4 = lasagne.layers.Conv2DLayer(
+      l_pad4,
+      num_filters=128,
+      filter_size=3,
+      nonlinearity=lasagne.nonlinearities.rectify,
+      W=lasagne.init.GlorotUniform(gain='relu'),
+      )
+
+  l_pool2 = lasagne.layers.MaxPool2DLayer(l_conv4, 
       pool_size=(2, 2),
       stride=2,
       )
 
 
+  l_pad5 = lasagne.layers.PadLayer(
+      l_pool2,
+      width=1,#padding width
+      )
+
+  l_conv5 = lasagne.layers.Conv2DLayer(
+      l_pad5,
+      num_filters=256,
+      filter_size=3,
+      nonlinearity=lasagne.nonlinearities.rectify,
+      W=lasagne.init.GlorotUniform(gain='relu'),
+      )
+
+  l_pad6 = lasagne.layers.PadLayer(
+      l_conv5,
+      width=1,#padding width
+      )
+
+  l_conv6 = lasagne.layers.Conv2DLayer(
+      l_pad6,
+      num_filters=256,
+      filter_size=3,
+      nonlinearity=lasagne.nonlinearities.rectify,
+      W=lasagne.init.GlorotUniform(gain='relu'),
+      )
+
+  l_pool3 = lasagne.layers.MaxPool2DLayer(l_conv6, 
+      pool_size=(2, 2),
+      stride=2,
+      )
+
   l_hidden1 = lasagne.layers.DenseLayer(
       l_pool3,
-      num_units=512,
+      num_units=2056,
       W=lasagne.init.GlorotUniform(gain="relu"),
       )
 
   l_hidden1_dropout = lasagne.layers.DropoutLayer(l_hidden1, p=0.5)
 
-
   l_hidden2 = lasagne.layers.DenseLayer(
       l_hidden1_dropout,
-      num_units=512,
+      num_units=2056,
       W=lasagne.init.GlorotUniform(gain="relu"),
       )
 
