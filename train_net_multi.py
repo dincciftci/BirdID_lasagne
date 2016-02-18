@@ -77,12 +77,10 @@ for foldername in folders:
   if not len(files) == PER_CATEGORY:
     raise ValueError("Can not find " + str(PER_CATEGORY) + " images in the folder " + foldername)
 
-  print("Start pool")
   pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
   results = [pool.apply_async(addFiles, args=(file, DIR, foldername, i)) for i, file in enumerate(files)]
   feats = [p.get() for p in results]
   pool.terminate()
-  print("Kill pool")
   sorted(feats)
   for feat in feats:
     feat.pop(0) # get rid of the index number that was used for sorting
@@ -107,6 +105,7 @@ X_train, X_valid, y_train, y_valid = sklearn.cross_validation.train_test_split(
     label,
     random_state=SEED2,
     train_size=RATIO,
+    stratify=label,
 )
 
 
@@ -146,6 +145,8 @@ def augment(batch):
   return result
 
 # ############################## prepare model ##############################
+
+print("Preparing model")
 
 l_in, l_out = config.build_model()
 

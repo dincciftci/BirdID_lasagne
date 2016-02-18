@@ -93,6 +93,7 @@ X_train, X_valid, y_train, y_valid = sklearn.cross_validation.train_test_split(
     label,
     random_state=SEED2,
     train_size=RATIO,
+    stratify=label,
 )
 
 
@@ -132,6 +133,8 @@ def augment(batch):
   return result
 
 # ############################## prepare model ##############################
+
+print("Preparing model")
 
 l_in, l_out = config.build_model()
 
