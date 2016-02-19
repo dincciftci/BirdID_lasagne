@@ -222,6 +222,15 @@ valid_fn = theano.function(inputs=[l_in.input_var, target_vector],
 
 print("Starting training...")
 
+# Early stopping configuration
+patience = 5  # Do this many epochs regardless
+patience_increase = 2     # wait this much longer when a new best is
+                          # found
+improvement_threshold = 0.995  # a relative improvement of this much is
+                               # considered significant
+best_validation_loss = np.inf
+
+
 num_epochs = EPOCHS
 batch_size = BATCH_SIZE
 for epoch_num in range(num_epochs):
@@ -281,6 +290,13 @@ for epoch_num in range(num_epochs):
     total_time = time.time() - start_time
     print("Epoch: %d, train_loss=%f, train_accuracy=%f, valid_loss=%f, valid_accuracy=%f, time=%fs"
           % (epoch_num + 1, train_loss, train_accuracy, valid_loss, accuracy, total_time))
+
+    if valid_loss < best_validation_loss * improvement_threshold:
+      patience = max(patience, epoch_num + patience_increase)
+    best_validation_loss = valid_loss
+
+    if patience <= epoch_num:
+      break
 
 # Save network if specified
 if SAVE:
