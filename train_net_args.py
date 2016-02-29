@@ -306,5 +306,7 @@ def main (config):
     print("Attempting to save network parameters as " + savename + ".npy")
     np.save(savename, lasagne.layers.get_all_param_values(l_out))
 
+  return best_validation_loss # return loss
+
 if __name__ == "__main__": # if running this specific script
   main(config)
