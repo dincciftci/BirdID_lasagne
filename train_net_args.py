@@ -51,11 +51,6 @@ def main (config):
 
   SAVE = config.SAVE 
 
-  if (args.save) != "":
-    SAVE = True
-    savename = args.save
-    print("Network parameters will be saved as " + savename + ".npy")
-
 
 
   print("Loading images")
@@ -152,10 +147,6 @@ def main (config):
   print("Preparing model")
 
   l_in, l_out = config.build_model()
-
-  if (args.resume) != "":
-    print("Loading network parameters from " + args.resume )
-    set_all_params_values(l_out, np.load(args.resume))
 
 
 # ############################### network loss ###############################

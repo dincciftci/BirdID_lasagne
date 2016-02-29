@@ -41,3 +41,23 @@ parameter_space = {'lr': {'type': 'float', 'min': -6, 'max': 1},
 # Create an optimizer
 ss = simple_spearmint.SimpleSpearmint(parameter_space)
 
+
+
+for n in xrange(100):
+  # Get a suggestion from the optimizer
+  suggestion = ss.suggest()
+  print ("Trial %d, suggested lr : 10^%f, suggested l2: 10^%f" % (n + 1, suggestion['lr'], suggestion['l2']))
+
+  config.learning_rate= 10 ** suggestion['lr']
+  config.l2_regularization_rate = 10 ** suggestion['l2']
+
+  result_loss = worker.main(config)
+  ss.update(suggestion, result_loss)
+  print ("Resulting loss: %f" % (result_loss))
+
+
+best_parameters, best_loss = ss.get_best_parameters()
+print ("Best parameters: ")
+print (best_parameters)
+print ("Best loss: ")
+print (best_loss)
