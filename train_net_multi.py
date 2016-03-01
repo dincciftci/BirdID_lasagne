@@ -291,9 +291,10 @@ for epoch_num in range(num_epochs):
     print("Epoch: %d, train_loss=%f, train_accuracy=%f, valid_loss=%f, valid_accuracy=%f, time=%fs"
           % (epoch_num + 1, train_loss, train_accuracy, valid_loss, accuracy, total_time))
 
-    if valid_loss < best_validation_loss * improvement_threshold:
-      patience = max(patience, epoch_num + patience_increase)
-    best_validation_loss = valid_loss
+    if valid_loss < best_validation_loss
+      if valid_loss < best_validation_loss * improvement_threshold:
+        patience = max(patience, epoch_num + patience_increase)
+      best_validation_loss = valid_loss
 
     if patience <= epoch_num:
       break
