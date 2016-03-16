@@ -56,7 +56,7 @@ for n in xrange(100):
   ss.update(suggestion, result_loss)
   print ("Resulting loss: %f" % (result_loss))
 
-  if (n % 5 == 0 && n > 1)
+  if (n % 5 == 0 and n > 1)
     best_parameters, best_loss = ss.get_best_parameters()
     print ("Best parameters: ")
     print (best_parameters)
