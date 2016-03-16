@@ -191,13 +191,13 @@ def main (config):
         params=all_params,
         learning_rate=config.learning_rate,
     )
-  else if (config.algorithm == 'adam'):
+  elif (config.algorithm == 'adam'):
     updates = lasagne.updates.adam(
         loss_or_grads=stochastic_loss,
         params=all_params,
         learning_rate=config.learning_rate,
     )
-  else if (config.algorithm == 'rmsprop'):
+  elif (config.algorithm == 'rmsprop'):
     updates = lasagne.updates.rmsprop(
         loss_or_grads=stochastic_loss,
         params=all_params,
