@@ -116,6 +116,10 @@ Dependencies:
 ----------
 
 - [Lasagne][1]: a lightweight library to build and train neural networks in [Theano][2]
+- [Scikit-learn][3]
+- [Simple Spearmint][2]
 
 [1]: https://github.com/Lasagne/Lasagne
 [2]: https://github.com/Theano/Theano
+[3]: http://scikit-learn.org/stable/
+[4]: https://github.com/craffel/simple_spearmint

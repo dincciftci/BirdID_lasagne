@@ -32,6 +32,7 @@ SAVE = False
 
 l2_regularization_rate = 0.0001
 learning_rate=0.009
+algorithm = 'adagrad'
 
 def build_model():
   """Returns the input and output layers in a tuple"""

@@ -184,20 +184,26 @@ def main (config):
 # - calculate how the parameters should be updated
 # - theano keeps a graph of operations, so that gradients w.r.t.
 #   the loss can be calculated
-  """
-  updates = lasagne.updates.nesterov_momentum(
-      loss_or_grads=stochastic_loss,
-      params=all_params,
-      learning_rate=0.1,
-      momentum=0.9)
-  """
 
-  updates = lasagne.updates.adagrad(
-      loss_or_grads=stochastic_loss,
-      params=all_params,
-      learning_rate=config.learning_rate,
-      #other params left as default as recommended in the documentation
-  )
+  if (config.algorithm == 'adagrad'):
+    updates = lasagne.updates.adagrad(
+        loss_or_grads=stochastic_loss,
+        params=all_params,
+        learning_rate=config.learning_rate,
+    )
+  else if (config.algorithm == 'adam'):
+    updates = lasagne.updates.adam(
+        loss_or_grads=stochastic_loss,
+        params=all_params,
+        learning_rate=config.learning_rate,
+    )
+  else if (config.algorithm == 'rmsprop'):
+    updates = lasagne.updates.rmsprop(
+        loss_or_grads=stochastic_loss,
+        params=all_params,
+        learning_rate=config.learning_rate,
+    )
+
 
 # - create a function that also updates the weights
 # - this function takes in 2 arguments: the input batch of images and a
@@ -288,6 +294,7 @@ def main (config):
       if valid_loss < best_validation_loss:
         if valid_loss < best_validation_loss * improvement_threshold:
           patience = max(patience, epoch_num + patience_increase)
+
         best_validation_loss = valid_loss
 
       if patience <= epoch_num:

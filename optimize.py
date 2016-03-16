@@ -36,28 +36,36 @@ worker = __import__("train_net_args")
 
 # will take to the power of 10 to use
 parameter_space = {'lr': {'type': 'float', 'min': -6, 'max': 1},
-    'l2': {'type': 'int', 'min': -6, 'max': 1}}
+    'alg': {'type': 'enum', 'options': ['adagrad', 'adam', 'rmsprop']}}
 
 # Create an optimizer
 ss = simple_spearmint.SimpleSpearmint(parameter_space)
 
+config.l2_regularization_rate = 0 # per the suggestion that l2 is not needed with softmax
 
 
 for n in xrange(100):
   # Get a suggestion from the optimizer
   suggestion = ss.suggest()
-  print ("Trial %d, suggested lr : 10^%f, suggested l2: 10^%f" % (n + 1, suggestion['lr'], suggestion['l2']))
+  print ("Trial %d, suggested lr : 10^%f, suggested algorithm : %s" % (n + 1, suggestion['lr'], suggestion['alg']))
 
-  config.learning_rate= 10 ** suggestion['lr']
-  config.l2_regularization_rate = 10 ** suggestion['l2']
+  config.learning_rate = 10 ** suggestion['lr']
+  config.algorithm = suggestion['alg']
 
   result_loss = worker.main(config)
   ss.update(suggestion, result_loss)
   print ("Resulting loss: %f" % (result_loss))
 
+  if (n % 5 == 0 && n > 1)
+    best_parameters, best_loss = ss.get_best_parameters()
+    print ("Best parameters: ")
+    print (best_parameters)
+    print ("Best loss: ")
+    print (best_loss)
+
 
 best_parameters, best_loss = ss.get_best_parameters()
-print ("Best parameters: ")
+print ("Final best parameters: ")
 print (best_parameters)
-print ("Best loss: ")
+print ("Final best loss: ")
 print (best_loss)
