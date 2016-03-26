@@ -223,8 +223,8 @@ def main (config):
   print("Starting training...")
 
 # Early stopping configuration
-  patience = 5  # Do this many epochs regardless
-  patience_increase = 5     # wait this much longer when a new best is
+  patience = 200  # Do this many epochs regardless
+  patience_increase = 0     # wait this much longer when a new best is
                             # found
   improvement_threshold = 0.995  # a relative improvement of this much is
                                  # considered significant
