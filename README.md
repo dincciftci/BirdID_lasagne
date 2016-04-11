@@ -99,6 +99,15 @@ After running with stratified random data splits for ~100 runs, mean validation 
 
 ![Graph of Data](http://i.imgur.com/GeW4UUM.png)
 
+
+## Training using GPU instances on Amazon EC2
+
+A substantial amount of training was done on Amazon EC2 g2.2xlarge instances. This provided a 20x speedup compared to training on CPUs.
+Instance image used: _gpu_theano_
+Used setup_aws_gpu.sh to set up the environment (gets git, updates Theano, installs Lasagne, scikit-learn and (simple)spearmint.) This script also mounts an EBS in its default location when attached, to copy logs and states over after training is complete.
+See run_and_save.sh for an example to use on these instances.
+
+
 ## Dependencies:
 ----------
 
