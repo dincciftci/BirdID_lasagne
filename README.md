@@ -46,8 +46,20 @@ learning_rate | [0,1] | Learning rate
 algorithm | String | The adaptive learning algorithm to use. Options are "rmpsprop", "adagrad", "adam".
 
 
+Additionally, all configuration files must have a network architecture specified within their build_model() methods, and this method must return a tuple of the input and output layers of this network for the training file to use.
+For available layers and such, see documentation for [Lasagne][1].
+
+### Training: 
+
+Files named train_net*.py are used for training networks based on configurations. The recommended one to use is train_net_args.py. The training scripts accept a few command line arguments:
+
+flag | alternative | description
+---- | ---- | ----
+-c | --config | Name of the configuration file. e.g. sx3_b32_random (do not include the extension)
+-s | --save | Name that will be given to the .npy containing network parameters. If no name is specified, the network parameters are not saved after training.
+-r | --resume | Name of the npy file to use to load a network to resume training. Make sure that a matching configuration file is used (and a low learning rate might be preferred)
+
 ## Results:
-----------
 These networks were used to classify photos of 9 species of birds. The dataset had a minimum of 98 images per category.
 
 Images are resized to 140x140, and then augmented using random horizontal flips and crops to 128x128 with random offsets. The validation set goes through the exact same method for augmentation. 
@@ -58,44 +70,16 @@ Rectified linear units were used as the activation function for both the convolu
 
 "Same" convolutions were used through zero-padding to keep the input and output dimensions the same.
 
-### convnet_sx3_fc.py:
+The optimal initial learning rate and adaptive algorithm were determined using [simple_spearmint][4].
+The script used for hyperparameter optimization is included, see optimize.py
 
-Layer Structure | Specifics
---------------- | ----------
-Input           | 3x128x128
-conv3-32        | Pad=1
-pool2           | Stride=2
-conv3-64        | Pad=1
-pool2           | Stride=2
-conv3-128       | Pad=1
-pool2           | Stride=2
-FC:512          | Dropout 50%
-Softmax         | 9-way
 
-Achieves 94-95% validation accuracy at about 150,000 gradient steps (about 300 epochs with a batch size of 1 using 60% of the data to train.)
-(Loss: ~.3)
+### sx3_b32_rand.py:
+This architecture was chosen for optimization, because (1) it ran in a reasonable amount of time on both the CPU and GPU (2) achieved over 90% accuracy easily wih un-optimized hyperparameters.
 
-### convnet_sx3_ffc.py:
+After many trials of optimization, the chosen learning rate update algorithm was adam and the chosen initial learning rate was 0.0007.
 
-Layer Structure | Specifics
---------------- | ----------
-Input           | 3x128x128
-conv3-32        | Pad=1
-pool2           | Stride=2
-conv3-64        | Pad=1
-pool2           | Stride=2
-conv3-128       | Pad=1
-pool2           | Stride=2
-FC:512          | Dropout 50%
-FC:512          | Dropout 50%
-Softmax         | 9-way
-
-Achieves 95-96% validation accuracy at about 200,000 gradient steps (about 300 epochs with a batch size of 1 using 60% of the data to train.)
-
-Achieves slightly higher (up to 97%) accuracy when 80% of the data is used to train. However, using 20% to validate puts about 10 images per category in the validation set, which is not a representative sample.
-(Loss: ~.2-.3)
-
-### convnet_sx3_fffc.py:
+#### Network architecture:
 
 Layer Structure | Specifics
 --------------- | ----------
@@ -108,27 +92,12 @@ conv3-128       | Pad=1
 pool2           | Stride=2
 FC:512          | Dropout 50%
 FC:512          | Dropout 50%
-FC:512          | Dropout 50%
 Softmax         | 9-way
 
-Achieves accuracy similar to convnet_sx3_ffc.py despite the additional fully connected layer, with the same number of epochs. Loss is around .2-.3 similarly, and accuracy can get as high as 97% when 80% of the dataset is used to train.
+#### Performance: (see run_100_times.sh to see how data was obtained)
+After running with stratified random data splits for ~100 runs, mean validation accuracy was found to be 92.9%. 
 
-### convnet_sx5_fc.py:
-
-Layer Structure | Specifics
---------------- | ----------
-Input           | 3x128x128
-conv5-16        | Pad=2
-pool2           | Stride=2
-conv5-32        | Pad=2
-pool2           | Stride=2
-conv5-64        | Pad=2
-pool2           | Stride=2
-FC:512          | Dropout 50%
-Softmax         | 9-way
-
-Achieves 92-93% validation accuracy at about 150,000 gradient steps (about 300 epochs with a batch size of 1 using 60% of the data to train.)
-(Loss: ~.3) 
+![Graph of Data](http://i.imgur.com/GeW4UUM.png)
 
 ## Dependencies:
 ----------
