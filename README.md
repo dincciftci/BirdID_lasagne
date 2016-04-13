@@ -76,7 +76,7 @@ The optimal initial learning rate and adaptive algorithm were determined using [
 The script used for hyperparameter optimization is included, see optimize.py
 
 
-### sx3_b32.py:
+### sx3_ffc_b32.py:
 This architecture was chosen for optimization, because (1) it ran in a reasonable amount of time on both the CPU and GPU (2) achieved over 90% accuracy easily wih un-optimized hyperparameters.
 
 After many trials of optimization, the chosen learning rate update algorithm was adam and the chosen initial learning rate was 0.0007.
